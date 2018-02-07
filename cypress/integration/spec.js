@@ -1,35 +1,19 @@
 describe('page', () => {
   beforeEach(() => {
-    cy.server()
-  })
-  it('runs mock app.js script', () => {
-    cy.route('/app.js', 'window.foo = 42')
-    cy.visit('index.html')
-    cy
-      .window()
-      .its('foo')
-      .should('equal', 42)
+    cy.clock()
+    cy.visit('index.html')    
   })
 
-  it.only('returns script with headers', () => {
-    cy.route({
-      method: 'GET',
-      url: '/app.js',
-      response: 'window.foo = 42',
-      headers: {
-        'Content-Type': 'application/javascript',
-      },
-    })
-    cy.visit('index.html')
-    cy
-      .window()
-      .its('foo')
-      .should('equal', 42)
+  // This test fails
+  it('loads with a single tick', () => {
+    cy.tick(2000)
+    cy.get('#main').contains('Loaded').should('exist')
   })
-  // it('first', () => {
-  //   cy.route('foo', 404)
-  // })
-  // it('second', () => {
-  //   cy.route('POST', 'bar', [])
-  // })
+
+  // This test passes
+  it('loads with a double tick', () => {
+    cy.tick(1000)
+    cy.tick(1000)
+    cy.get('#main').contains('Loaded').should('exist')
+  })
 })
